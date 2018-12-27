@@ -1,0 +1,321 @@
+{template 'common/header'}
+<style type="text/css">
+    .fahuo_mask{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, .5);
+            display: none;
+            z-index: 99999;
+        }
+        .fahuo_model{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            width:30vw;
+            background: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .fahuo_tit{
+            position: relative;
+            width: 100%;
+            padding: 14px 10px;
+            background: #f4f5f9;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .fahuo_cont{
+            width: 100%;
+            height: 300px;
+            box-sizing: border-box;
+            padding: 40px 60px;
+            font-size: 14px;
+        }
+        .fahuo_item{
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .shr{
+            align-items: flex-start;
+        }
+        .fahuo_item_l{
+            margin-right: 10px;
+        }
+        .fahuo_item_r{
+            width: 80%;
+            height: 30px;
+        }
+        .fahuo_item_r input{
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border: 1px solid #999;
+            outline: none;
+            padding-left: 2%;
+        }
+        .fahuo_bottom{
+            width: 100%;
+            padding: 10px 0;
+            background: #f4f5f9;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .fahuo_btn{
+            min-width: 60px;
+            border-radius: 4px;
+            padding: 6px 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .fahuo_send{
+            background: #44abf7;
+            color: #fff;
+            /*margin-right: 10px;*/
+            border: none;
+            outline: none;
+        }
+        /*.fahuo_send button{
+            background: 
+        }*/
+        .fahuo_cancel{
+            background: #fff;
+        }
+        .fahuo_close{
+            position: absolute;;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+        }
+</style>
+{if $op == 'display'}
+
+<form class="form-horizontal" action="" method="post" id="form1">
+    <table class="table we7-table table-hover article-list vertical-middle">
+        <tr>
+        	<td style="width: 50px;"><input type="checkbox"  onclick="var ck = this.checked;$(':checkbox').each(function(){this.checked = ck});" name=''></td>
+            <td>ID</td>
+            <td>用户信息</td>
+            <td>标题</td>
+            <td>图片</td>
+            <td>单价(元)</td>
+            <td>个数(个)</td>
+            <td>总价(元)</td>
+            <td>订单编号</td>
+            <td>订单状态</td>
+            <td>订单类型</td>
+            <td>时间</td>
+            <td class="text-right">操作</td>
+        </tr>
+        {loop $products $item}
+        <tr>
+        	<td><input type="checkbox" value="{$item['id']}" name="deleteall[]"></td>
+            <td>{$item['id']}</td>
+            <td><img src="{media $item['avatar']}" style="width:40px;height:40px" alt=""> {$item['nickname']}</td>
+            <td>{$item['title']}</td>
+            <td>
+                <img  height="150px;" width="150px;" src="{media $item['thumb']}">
+            </td>
+            <td>{$item['price']}</td>
+            <td>{$item['counts']}</td>
+            <td>{$item['totalPrice']}</td>
+            <td>{$item['orderid']}</td>
+            <td>
+                {if $item['status'] == 0}
+                <span class='label label-success'>未送出</span>
+                {else if $item['status'] == 1}
+                <span class='label label-success'>待领取</span>
+                {else if $item['status'] == 2}
+                <span class='label label-success'>已领取</span>
+                {else if $item['status'] == 3}
+                <span class='label label-success'>已收货</span>
+                {/if}
+            </td>
+            <td><span class='label label-success'>{$item['sltj']}</span></td>
+            <td>{php echo date('Y-m-d H:i:s',$item['time'])}</td>
+            <td class="text-right">
+                <a class="btn btn-default btn-sm" href="{php echo $this->createWeburl('cj_lws_order', array('orderid' => $item['orderid'], 'op' =>'post'))}" >查看详情</a>
+                <a class="btn btn-default btn-sm" onclick="return confirm('此操作不可恢复，确认吗？'); return false;" href="{php echo $this->createWeburl('cj_lws_order', array('id' => $item['id'], 'op' => 'delete'))}">删除</a>
+            </td>
+        </tr>
+        {/loop}
+    </table>
+    <table class="table">
+        <tr>
+            <td>
+                <input class="btn btn-primary" type="submit" value="删除" name="submit" style="height: 30px;">
+            </td>
+        </tr>
+    </table>
+    <div style="margin:0 auto;margin-right: auto;vertical-align: middle;text-align: center;" >
+    {$pager}
+    </div>
+</form>
+<script type="text/javascript">
+    $('#form1').submit(function(){
+        if($(":checkbox[name='deleteall[]']:checked").size() > 0){
+            return confirm('删除后不可恢复，您确定删除吗？');
+        }
+        return false;
+    });
+</script>
+{/if}
+{if $op == 'post'}
+
+<form class="form-horizontal" action="" method="post" id="form2">
+    <table class="table we7-table table-hover article-list vertical-middle">
+        <tr>
+            <td style="width: 50px;"><input type="checkbox"  onclick="var ck = this.checked;$(':checkbox').each(function(){this.checked = ck});" name=''></td>
+            <td>ID</td>
+            <td>用户信息</td>
+            <td>送礼用户信息</td>
+            <td>礼物玩法</td>
+            <td>商品个数</td>
+            <td>订单编号</td>
+            <td>是否领取</td>
+            <td>收货姓名</td>
+            <td>收货电话</td>
+            <td>收货地址</td>
+            <td>时间</td>
+            <td class="text-right">操作</td>
+        </tr>
+        {loop $order $item}
+        <tr>
+            <td><input type="checkbox" value="{$item['id']}" name="deleteall[]"></td>
+            <td>{$item['id']}</td>
+            <td><img src="{media $item['avatarUrl']}" style="width:40px;height:40px" alt=""> {$item['nickName']}</td>
+            <td><img src="{media $item['c_avatarUrl']}" style="width:40px;height:40px" alt=""> {$item['c_nickName']}</td>
+            <td>{$item['sltj']}</td>
+            <td>
+                {if $item['sltj'] == 直接送礼}{$item['counts']}件
+                {else if $item['sltj'] == 满人送礼}
+                1件
+                {/if}
+            </td>
+            <td>{$item['orderid']}</td>
+            <td>
+                {if $item['status'] == 1} 
+                    <span class='label label-success'>已领取</span><br /> 
+                    <button type="button" class="btn btn-danger fahuo_success" name="{$item['id']},{$item['user_name']}/{$item['user_tel']},{$item['user_address']}" style="width: 80px;height: 30px;padding: 0;">确认发货</button>   
+                {else if $item['status'] == 0}
+                    <span class='label btn-danger'>待领取</span>
+                {else if $item['status'] == 2}
+                    <span class='label label-success'>已发货</span>
+                {/if}
+            </td>
+            <td>{$item['user_name']}</td>
+            <td>{$item['user_tel']}</td>
+            <td>{$item['user_address']}</td>
+            <td>{php echo date('Y-m-d H:i:s',$item['time'])}</td>
+            <td class="text-right">
+                <a class="btn btn-default btn-sm" onclick="return confirm('此操作不可恢复，确认吗？'); return false;" href="{php echo $this->createWeburl('cj_lws_order', array('id' => $item['id'], 'op' => 'del'))}">删除</a>
+            </td>
+        </tr>
+        {/loop}
+    </table>
+    <table class="table">
+        <tr>
+            <td>
+                <input class="btn btn-primary" type="submit" value="删除" name="submit" style="height: 30px;">
+            </td>
+        </tr>
+    </table>
+    <div style="margin:0 auto;margin-right: auto;vertical-align: middle;text-align: center;" >
+    {$pager}
+    </div>
+</form>
+<script type="text/javascript">
+    $('#form2').submit(function(){
+        if($(":checkbox[name='delall[]']:checked").size() > 0){
+            return confirm('删除后不可恢复，您确定删除吗？');
+        }
+        return false;
+    });
+</script>
+<form class="form-horizontal" action="" method="post">
+<div class='fahuo_mask'>
+        <div class='fahuo_model'>
+            <div class='fahuo_tit'>
+                订单发货
+                <img class='fahuo_close' src="/addons/choujiang_page/close.png">
+            </div>
+            <div class='fahuo_cont'>
+                <div class='fahuo_item shr'>
+                    <div class='fahuo_item_l'>收货人</div>
+                    <div>
+                        <div class='fahuo_item_people'>联系人：</div>
+                        <div class='fahuo_item_address'>地址：</div>
+                    </div>
+                </div>
+                <div class='fahuo_item'>
+                    <div class='fahuo_item_l'>快递公司</div>
+                    <div class='fahuo_item_r'>
+                        <input type="text" name="kd_gongsi">
+                    </div>
+                </div>
+                <div class='fahuo_item'>
+                    <div class='fahuo_item_l'>快递单号</div>
+                    <div class='fahuo_item_r'>
+                        <input type="text" name="kd_order">
+                    </div>
+                </div>
+            </div>
+            <div class='fahuo_bottom'>
+                <input name="token" type="hidden" value="{$_W['token']}" />
+                <input name="id" type="hidden" value="" />
+                <div class='fahuo_btn '>
+                    <input class='fahuo_btn fahuo_send' type="submit" name="submit" value="确认发货" />
+                </div>
+                <div class='fahuo_btn fahuo_cancel'>取消</div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<script src='/addons/choujiang_page/jquery.min.js'></script>
+<script type="text/javascript">
+    $(function(){
+        $('.fahuo_success').click(function(){
+            var name_info = this.name;
+            name_info = name_info.split(',');
+            $('.fahuo_bottom input[name=id]')[0].value=name_info[0];
+            $('.fahuo_item_people').html($('.fahuo_item_people').html()+name_info[1]);
+            $('.fahuo_item_address').html($('.fahuo_item_address').html()+name_info[2])
+            model_show()
+        })
+        $('.fahuo_close').click(function(){
+            model_hide()
+            $('.fahuo_item_people').html('联系人：');
+            $('.fahuo_item_address').html('地址：');
+        })
+        $('.fahuo_send').click(function(){
+            model_hide();
+            $('.fahuo_item_people').html('联系人：');
+            $('.fahuo_item_address').html('地址：');
+            var kd_gongsi = $('input[name=kd_gongsi]')[0].value;
+            var kd_order = $('input[name=kd_order]')[0].value;
+
+        })
+        $('.fahuo_cancel').click(function(){
+            model_hide();
+            $('.fahuo_item_people').html('联系人：');
+            $('.fahuo_item_address').html('地址：');
+        })
+        function model_hide(){
+            $('.fahuo_mask').hide();
+        }
+        function model_show(){
+            $('.fahuo_mask').show();
+        }
+    })
+</script>
+{/if}
+{template 'common/footer'}

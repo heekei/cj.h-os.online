@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.kai8.top/" versionCode="0.6">
+	<application setting="false">
+		<name><![CDATA[抽奖助手]]></name>
+		<identifie><![CDATA[choujiang_page]]></identifie>
+		<version><![CDATA[4.4.9]]></version>
+		<type><![CDATA[business]]></type>
+		<ability><![CDATA[抽奖小程序]]></ability>
+		<description><![CDATA[内含自定义抽奖信息、参与抽奖等]]></description>
+		<author><![CDATA[开吧源码社区]]></author>
+		<url><![CDATA[http://www.kai8.top/]]></url>
+	</application>
+	<platform>
+		<subscribes>
+		</subscribes>
+		<handles>
+			<message type="text" />
+			<message type="image" />
+			<message type="voice" />
+			<message type="video" />
+			<message type="shortvideo" />
+			<message type="location" />
+			<message type="link" />
+			<message type="subscribe" />
+			<message type="qr" />
+			<message type="trace" />
+			<message type="click" />
+			<message type="merchant_order" />
+			<message type="user_get_card" />
+			<message type="user_del_card" />
+			<message type="user_consume_card" />
+		</handles>
+		<rule embed="true" />
+		<card embed="false" />
+		<supports><item type="wxapp" /></supports>
+		<plugin-main name="0" />
+	</platform>
+	<bindings>
+		<rule>
+			<entry title="应用入口" do="index" state="" direct="false" />
+		</rule>
+		<menu>
+			<entry title="基础信息" do="choujiang_base" state="" direct="false" />
+			<entry title="参数设置" do="choujiang_num" state="" direct="false" />
+			<entry title="奖品管理" do="choujiang_goods" state="" direct="false" />
+			<entry title="用户管理" do="choujiang_users" state="" direct="false" />
+			<entry title="常见问题" do="choujiang_problems" state="" direct="false" />
+			<entry title="抽奖记录" do="choujiang_record" state="" direct="false" />
+			<entry title="小程序推荐" do="choujiang_xcx" state="" direct="false" />
+			<entry title="提现管理" do="choujiang_withdrawal" state="" direct="false" />
+			<entry title="骗审管理" do="choujiang_cheat" state="" direct="false" />
+			<entry title="骗审底部导航" do="choujiang_cheat_nav" state="" direct="false" />
+			<entry title="支付记录" do="choujiang_pay_record" state="" direct="false" />
+			<entry title="广告管理" do="choujiang_advertising" state="" direct="false" />
+			<entry title="礼物说设置" do="cj_lws_base" state="" direct="false" />
+			<entry title="礼物说订单管理" do="cj_lws_order" state="" direct="false" />
+			<entry title="礼物说商品管理" do="cj_lws_goods" state="" direct="false" />
+			<entry title="发起类别付费管理" do="choujiang_pay" state="" direct="false" />
+		</menu>
+		<page>
+			<entry title="首页入口" do="/choujiang_page/index_cj/index_cj" state="" direct="false" />
+		</page>
+	</bindings>
+	<permissions>
+	</permissions>
+	<install><![CDATA[m_install.php]]></install>
+	<uninstall><![CDATA[DROP TABLE IF EXISTS `ims_choujiang_advertising`;
+DROP TABLE IF EXISTS `ims_choujiang_base`;
+DROP TABLE IF EXISTS `ims_choujiang_cheat`;
+DROP TABLE IF EXISTS `ims_choujiang_cheat_nav`;
+DROP TABLE IF EXISTS `ims_choujiang_earnings`;
+DROP TABLE IF EXISTS `ims_choujiang_exchange`;
+DROP TABLE IF EXISTS `ims_choujiang_fur`;
+DROP TABLE IF EXISTS `ims_choujiang_goods`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_base`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_goods`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_goods_fl`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_kf`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_order`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_order_liwu`;
+DROP TABLE IF EXISTS `ims_choujiang_lws_sylc`;
+DROP TABLE IF EXISTS `ims_choujiang_pay_record`;
+DROP TABLE IF EXISTS `ims_choujiang_problems`;
+DROP TABLE IF EXISTS `ims_choujiang_record`;
+DROP TABLE IF EXISTS `ims_choujiang_scene`;
+DROP TABLE IF EXISTS `ims_choujiang_scene_dialogue`;
+DROP TABLE IF EXISTS `ims_choujiang_speak`;
+DROP TABLE IF EXISTS `ims_choujiang_team`;
+DROP TABLE IF EXISTS `ims_choujiang_user`;
+DROP TABLE IF EXISTS `ims_choujiang_verification`;
+DROP TABLE IF EXISTS `ims_choujiang_vip_num`;
+DROP TABLE IF EXISTS `ims_choujiang_withdrawal`;
+DROP TABLE IF EXISTS `ims_choujiang_xcx`;
+]]></uninstall>
+	<upgrade><![CDATA[m_upgrade.php]]></upgrade>
+</manifest>

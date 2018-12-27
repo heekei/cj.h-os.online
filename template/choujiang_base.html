@@ -1,0 +1,417 @@
+{template 'common/header'}
+{if $op == 'display'}
+<style type="text/css">
+    .mobannr{
+        border:1px solid #e7e7eb;
+    }
+    .mb_title{
+        margin-bottom: 30px;
+    }
+    .mb_title .mb_kjrq{
+        color: #999;
+        font-size: 12px;
+    }
+    .mb_body p span:first-child{
+        display: inline-block;
+        color: #999;
+        margin-right: 20px;
+    }
+    /*.clear{
+        overflow: hidden;
+    }*/
+    .textclear{
+        float: left;
+        width: 80%;
+    }
+    .btnclear{
+        float: right;
+        height: 34px;
+        line-height: 34px;
+        border: 1px solid #3071a9;
+        background: #3071a9;
+        color: #fff;
+        padding: 0 20px;
+        border-radius: 5px;
+    }
+</style>
+<form class="form-horizontal" action="" method="post" name="uploadfile"  enctype="multipart/form-data">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">基本信息设置</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">首页标题</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[index_title]" value="{$item['index_title']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">首页标题</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">appid</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[appid]" value="{$item['appid']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">appid</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">密钥</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[appsecret]"  value="{$item['appsecret']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">秘钥</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">支付密钥</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[appkey]"  value="{$item['appkey']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">支付密钥</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">商户id</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[mch_id]" value="{$item['mch_id']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">商户id</div>
+            </div>
+
+            <div class="form-group">
+                <label for="lastname" class="col-sm-2 control-label" style="margin-right:45px">微信商户支付证书apiclient_cert.pem</label>
+                <div class="form-controls col-sm-5">
+                    <input type='file' name="upfile" value="{$item['upfile']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">{$item[upfile]}
+                    <input type="hidden" name="upfile1" value="{$item['upfile']}">
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="lastname" class="col-sm-2 control-label" style="margin-right:45px">微信商户支付证书apiclient_key.pem</label>
+                <div class="form-controls col-sm-5">
+                    <input type='file' name="keypem" value="{$item['keypem']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">{$item[keypem]}
+                    <input type="hidden" name="keypem1" value="{$item['keypem']}">
+
+                </div>
+                <div class="col-sm-1"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">是否允许用户自己发布奖品</label>
+                <div class="form-controls col-sm-5">
+                    <input type="radio" name="set[sponsor_status]" value="0" class="sponsor_status" {if $item['sponsor_status'] == 0} checked="checked" {/if}> 否
+                    <input type="radio" name="set[sponsor_status]" value="1" class="sponsor_status" {if $item['sponsor_status'] == 1} checked="checked" {/if} style="margin-left:30px;"> 是 
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">分享标题</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[share_title]" value="{$item['share_title']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">分享给好友所展示的标题</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">红包手续费(%)</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[poundage]" value="{$item['poundage']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(【开吧源码】默认 0 为不收手续费。金额低于 1 元 不收取手续费)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">小程序跳转付费金额 元/次</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[xcx_price]" value="{$item['xcx_price']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(小程序添加跳转信息、需付费)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">中奖后,最迟填写领取方式 /小时</label>
+                <div class="form-controls col-sm-5">
+                    <input type="number" name="set[latest_time]" value="{$item['latest_time']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(中奖后,超时未领取或未填写收货信息,该奖品将失效,0为不限时)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">用户自取限时 /小时</label>
+                <div class="form-controls col-sm-5">
+                    <input type="number" name="set[takes_time]" value="{$item['takes_time']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(中奖后,用户选择自取方式,二维码失效限时,0为不限时)</div>
+            </div>
+
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">全局核销码</label>
+                <div class="form-controls col-sm-5" style="overflow:hidden">
+                    <input  type="text" id="hexiao" name="set[hexiaoma]" value="{$item['hexiaoma']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty textclear"  placeholder="" autocomplete="off" readonly="false">
+                   <div class="btnclear" onclick="setItemHexiao(this,'hexiaoma')">生成核销码</div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(核销码核销,对所有奖品通用,请勿泄露!)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">是否开启红包抽奖(奖品)</label>
+                <div class="form-controls col-sm-5">
+                    <input type="radio" name="set[envelope_draw]" value="0" class="onclick" {if $item['envelope_draw'] == 0} checked="checked" {/if}> 否
+                    <input type="radio" name="set[envelope_draw]" value="1" class="onclick" {if $item['envelope_draw'] == 1} checked="checked" {/if} style="margin-left:30px;"> 是 
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">是否开启后台审核</label>
+                <div class="form-controls col-sm-5">
+                    <input type="radio" name="set[audit_set]" value="0" class="onclick" {if $item['audit_set'] == 0} checked="checked" {/if}> 否
+                    <input type="radio" name="set[audit_set]" value="1" class="onclick" {if $item['audit_set'] == 1} checked="checked" {/if} style="margin-left:30px;"> 是 
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(开启审核,前台添加奖品需要后台审核)</div>
+            </div>
+
+            <div class="form-group">    
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">流量主id</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[ad]"  value="{$item['ad']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">流量主id</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">礼物说使用说明</label>
+                <div class="form-controls col-sm-5">
+                    {php echo tpl_ueditor('set[zzs_text]', $item['zzs_text']);}
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">开奖通知 模板ID</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[template_id]"  value="{$item['template_id']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">中奖消息推送</div>
+            </div>
+
+             <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">开奖通知-模板样式</label>
+                <div class="form-controls col-sm-5 mobannr" style="padding:10px;">
+                    <div class="mb_title">
+                        <p>抽奖结果通知</p>
+                        <p class="mb_kjrq">2018年4月</p>
+                    </div>
+                    <div class="mb_body">
+                        <p>
+                            <span>活动商品</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>注意事项</span>
+                            <span>XXXXXXXXXXXXXXX</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">开奖通知模板样式</div>
+            </div>
+
+
+            <div class="form-group">    
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">商品发布成功通知 模板ID</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[template_id2]"  value="{$item['template_id2']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">商品发布成功通知</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">商品发布成功-模板样式</label>
+                <div class="form-controls col-sm-5 mobannr" style="padding:10px;">
+                    <div class="mb_title">
+                        <p>商品信息上传成功通知</p>
+                        <p class="mb_kjrq">201*年*月</p>
+                    </div>
+                    <div class="mb_body">
+                        <p>
+                            <span>商品名称</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>上传时间</span>
+                            <span>201*年*月*日</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">商品发布成功模板样式</div>
+            </div>
+
+            <div class="form-group">    
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">礼物领取成功模板ID</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[template_id3]"  value="{$item['template_id3']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">礼物领取成功模板通知</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">礼物领取成功-模板样式</label>
+                <div class="form-controls col-sm-5 mobannr" style="padding:10px;">
+                    <div class="mb_title">
+                        <p>礼品领取成功成功通知</p>
+                        <p class="mb_kjrq">201*年*月</p>
+                    </div>
+                    <div class="mb_body">
+                        <p>
+                            <span>礼品名称</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>收礼人</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>领取时间</span>
+                            <span>201*年*月*日</span>
+                        </p>
+                        <p>
+                            <span>温馨提示</span>
+                            <span>XXXX</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">礼物领取成功-模板样式</div>
+            </div>
+
+
+            <div class="form-group">    
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">礼物开奖结果模板ID</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[template_id4]"  value="{$item['template_id4']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">礼物开奖结果模板通知</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">礼物开奖结果-模板样式</label>
+                <div class="form-controls col-sm-5 mobannr" style="padding:10px;">
+                    <div class="mb_title">
+                        <p>开奖结果通知</p>
+                        <p class="mb_kjrq">201*年*月</p>
+                    </div>
+                    <div class="mb_body">
+                        <p>
+                            <span>开奖结果</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>温馨提示</span>
+                            <span>XXXX</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">礼物开奖结果-模板样式</div>
+            </div>
+
+            <div class="form-group">    
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">订单发货模板ID</label>
+                <div class="form-controls col-sm-5">
+                    <input type="text" name="set[template_id5]"  value="{$item['template_id5']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">订单发货模板通知</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-2" style="margin-right:45px">订单发货-模板样式</label>
+                <div class="form-controls col-sm-5 mobannr" style="padding:10px;">
+                    <div class="mb_title">
+                        <p>订单发货提醒</p>
+                        <p class="mb_kjrq">201*年*月</p>
+                    </div>
+                    <div class="mb_body">
+                        <p>
+                            <span>物品名称</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>订单号</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>收货地址</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>物流公司</span>
+                            <span>XXXX</span>
+                        </p>
+                        <p>
+                            <span>物流单号</span>
+                            <span>XXXX</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">礼物开奖结果-模板样式</div>
+            </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input name="token" type="hidden" value="{$_W['token']}" />
+            <input type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交" style="margin-left: 45%;" />
+        </div>
+    </div>
+</form>
+{/if}
+{template 'common/footer'}
+<script type="text/javascript">
+ // 生成随机核销码
+    function setItemHexiao(obj,op){
+        var id=$(obj).attr('data');
+        if(op=='hexiaoma'){
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: "{php echo $this->createWebUrl('choujiang_base',array('op' =>'hexiaoma'))}",
+                success:function(result){
+                    console.log(result);
+                    $('#hexiao').val(result.data);
+                    // if(result.data==1){
+                    //     $(obj).addClass('actives');
+                    // }else{
+                    //     $(obj).removeClass('actives');
+                    // }
+                }
+            });
+        }
+    }
+</script>

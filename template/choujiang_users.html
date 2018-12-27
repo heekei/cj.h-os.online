@@ -1,0 +1,115 @@
+{template 'common/header'}
+{if $op == 'content'}
+<form class="form-horizontal" action="" method="post" class="form1" >
+     <div class="pull-right col-sm-6" style="padding:10px 0px 10px 0">
+        <div class="input-group" style="width:100%;">
+            <input type="text" class="input-sm form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入用户名/姓名/ 进行搜索" style="height:34px">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"> 搜索</button>
+            </span>
+        </div>
+    </div>
+    <div class="panel-heading">
+        <h3 class="panel-title">用户列表</h3>
+    </div>
+    <table class="table we7-table table-hover article-list vertical-middle">
+        <tr>
+            <td style="width: 100px;">ID</td>
+            <td>用户</td>
+            <td>openid</td>
+            <td>姓名</td>
+            <td>手机号</td>
+            <td>生日</td>
+            <td>剩余发起次数</td>
+            <td>剩余免费参与次数</td>
+            <td>本月剩余中奖次数</td>
+            <td>时间</td>
+            <td>操作</td>
+        </tr>
+        {loop $products $item}
+        <tr>
+            <td>
+                {$item['id']}
+            </td>
+            <td>
+                <img src="{media $item['avatar']}" style="width:40px;height:40px" alt=""> {$item['nickname']}
+            </td>
+            <td>
+                {$item['openid']}
+            </td>
+            <td>{$item['name']}</td>
+            <td>{$item['tel']}</td>
+            <td>{$item['shengri']}</td>
+            <td>
+                {$item['join_num']}
+            </td>
+            <td>
+                {$item['smoke_num']}
+            </td>
+            <td>
+                {$item['winning_num']}
+            </td>
+            
+            <td>
+                {$item['create_time']}
+            </td>
+            <td>
+                <a class="btn btn-default btn-sm" href="{php echo $this->createWeburl('choujiang_users', array('id' => $item['id'], 'op' =>'post'))}" >编辑</a>
+            </td>
+        </tr>
+        {/loop}
+    </table>
+    <div style="margin:0 auto;margin-right: auto;vertical-align: middle;text-align: center;" >
+        {$pager}
+    </div>
+</form>
+
+{/if}
+
+
+{if $op == 'post'}
+<form class="form-horizontal" action="" method="post">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">用户信息管理</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="" class="control-label col-sm-1">剩余发起次数</label>
+                <div class="form-controls col-sm-5" style="margin-left: 75px;">
+                    <input type="text" name="join_num" value="{$item['join_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">(注* 该次数是基于系统免费次数的基础上累加)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-1">剩余免费参与次数</label>
+                <div class="form-controls col-sm-5" style="margin-left: 75px;">
+                    <input type="text" name="smoke_num" value="{$item['smoke_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">剩余免费参与抽奖次数</div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="control-label col-sm-1">本月剩余中奖次数</label>
+                <div class="form-controls col-sm-5" style="margin-left: 75px;">
+                    <input type="text" name="winning_num"  value="{$item['winning_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="form-controls col-sm-3 help-block">本月剩余中奖次数(指定除外)</div>
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input name="token" type="hidden" value="{$_W['token']}" />
+            <input type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交" style="margin-left: 45%;" />
+        </div>
+    </div>
+</form>
+
+{/if}
+{template 'common/footer'}

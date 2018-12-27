@@ -1,0 +1,1330 @@
+{template 'common/header'}
+<style>
+	.cardbox {
+		position: relative;
+		/*background:red;*/
+	}
+	
+	.dels {
+		position: absolute;
+		top: 0px;
+		right: 40%;
+	}
+	
+	.actives {
+		background: #428BCA;
+		color: #FFF;
+	}
+</style>
+{if $op == 'content'}
+
+<div class="pull-right">
+	<a href="{php echo $this->createWeburl('choujiang_goods', array('op'=>'post'));}" class="btn btn-primary we7-padding-horizontal" style="margin-bottom: 20px">添加奖品</a>
+</div>
+<form class="form-horizontal" action="" method="post" class="form1">
+	<div class="pull-right col-sm-6">
+		<div class="col-sm-3" style="width:40%;float:left;padding:0px;margin:0 3% 0 3%">
+			<select name="goods_state" class="form-control">
+				<option value="0" {if $_GPC[ 'goods_state']==0} selected{/if}>--请选择--</option>
+				<option value="1" {if $_GPC[ 'goods_state']==1} selected{/if}>已开奖</option>
+				<option value="2" {if $_GPC[ 'goods_state']==2} selected{/if}>待开奖</option>
+				<option value="3" {if $_GPC[ 'goods_state']==3} selected{/if}>待审核</option>
+				<option value="4" {if $_GPC[ 'goods_state']==4} selected{/if}>审核未通过</option>
+			</select>
+		</div>
+		<div class="input-group" style="width:50%;">
+
+			<input type="text" class="input-sm form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入奖品名称进行搜索" style="height:34px">
+			<span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"> 搜索</button>
+            </span>
+		</div>
+	</div>
+	<table class="table we7-table table-hover article-list vertical-middle">
+		<tr>
+			<th style="width: 50px;"><input type="checkbox" onclick="var ck = this.checked;$(':checkbox').each(function(){this.checked = ck});" name=''></th>
+			<td style="width: 100px;">ID</td>
+			<td>奖品名称</td>
+			<td>奖品类别</td>
+			<td>奖品数量</td>
+			<td>奖品缩略图</td>
+			<td>发起人</td>
+			<td>开奖方式</td>
+			<td>状态</td>
+			<td class="text-right">操作</td>
+		</tr>
+		{loop $products $item}
+		<tr>
+			<td><input type="checkbox" value="{$item['id']}" name="deleteall[]"></td>
+			<td>
+				{$item['id']}
+			</td>
+
+			<td>
+				{$item['goods_name']}
+			</td>
+			<td>
+				{$item['goods_status_name']}
+			</td>
+			<td>
+				{$item['goods_num']}
+			</td>
+			<td style="width: 150px">
+				<img src="{media $item['goods_icon']}" width="100px" alt="">
+			</td>
+			<td>
+				{$item['goods_username']}
+			</td>
+			<td>
+				{$item['smoke_name']}
+			</td>
+			<td>
+				{$item['zh_status']}
+			</td>
+			<td class="text-right">
+				{if $item['audit_status'] == 1 && $item['status'] == 0}
+				<a style="cursor:pointer;" data="{$item['id']}" class="btn btn-default btn-sm {if $item['to_index']==1} actives {/if}" onclick="setItemStatus(this,'index')">推送至首页</a>{/if}
+				{if $item['status'] == 1}
+				<a style="cursor:pointer;"  class="btn btn-default btn-sm " href="{php echo $this->createWeburl('choujiang_goods', array('id' => $item['id'], 'op' => 'winners'))}">中奖名单</a>
+				{/if}
+				<a class="btn btn-default btn-sm" href="{php echo $this->createWeburl('choujiang_goods', array('id' => $item['id'], 'op' =>'post'))}">编辑</a>
+				<a class="btn btn-default btn-sm" onclick="return confirm('此操作不可恢复，确认吗？'); return false;" href="{php echo $this->createWeburl('choujiang_goods', array('id' => $item['id'], 'op' => 'delete'))}">删除</a>
+			</td>
+		</tr>
+		{/loop}
+	</table>
+	<table class="table">
+		<tr>
+			<td>
+				<input class="btn btn-primary" type="submit" value="删除" name="submit" style="height: 30px;">
+			</td>
+		</tr>
+	</table>
+	<div style="margin:0 auto;margin-right: auto;vertical-align: middle;text-align: center;">
+		{$pager}
+	</div>
+</form>
+<script type="text/javascript">
+	$('.form1').submit(function() {
+		if($(":checkbox[name='deleteall[]']:checked").size() > 0) {
+			return confirm('删除后不可恢复，您确定删除吗？');
+		}
+		return false;
+	});
+</script>
+{/if}
+
+{if $op == 'winners'}
+
+	<table class="table we7-table table-hover article-list vertical-middle">
+		<tr>
+            <td style="width: 100px;">ID</td>
+            <td>奖品名称</td>
+            <td>奖品缩略图</td>
+            <td>用户</td>
+            <td>中奖状态</td>
+            <td>参与时间</td>
+            <td>开奖时间</td>
+            <td>兑奖方式</td>
+		</tr>
+		{loop $record $item}
+		<tr>
+			<td>
+                {$item['id']}
+            </td>
+            <td>
+                {$item['goods_name']}
+            </td>
+            <td style="width: 150px">
+                <img src="{media $item['goods_icon']}" width="100px" alt="">
+            </td>
+            <td>
+                <img src="{$item['avatar']}" width="30px" alt="">{$item['nickname']}
+            </td>
+            <td>
+                {$item['state']}
+            </td>
+            <td>
+                {$item['create_time']}
+            </td>
+            <td>
+                {if $item['state']=='未开奖'}未开奖{else}{$item['finish_time']}{/if}
+            </td>
+            <td>
+                {$item['get_title']}
+                {if $item['get_status'] == 1}
+                    <a class="btn btn-default btn-sm" href="{php echo $this->createWeburl('choujiang_record', array('id' => $item['id'], 'op' =>'post'))}" >收货地址</a>
+                {/if}
+            </td>
+		</tr>
+		{/loop}
+	</table>
+{/if}
+
+<!-- 编辑新增 -->
+{if $op == 'post'}
+<form class="form-horizontal form2" action="" method="post">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">奖品管理 <span style="color:#7E7E7E;font-size:13px;margin-left:10px">(当已有用户参与该活动时,不可编辑)</span></h3>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1">奖品类别</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<select name="cj[goods_status]" class="form-control ng-pristine ng-untouched ng-valid ng-empty" id="good_lb">
+						<option value="0" {if $item[ 'goods_status']==0} selected{/if}>实物</option>
+						<option value="1" {if $item[ 'goods_status']==1} selected{/if}>电子卡</option>
+						<option value="2" {if $item[ 'goods_status']==2} selected{/if}>红包</option>
+					</select>
+				</div>
+			</div> 
+			<!-- 实物 -->
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1" id="piyixia">皮一下*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="radio" name="cj[fur_status]" value="0" class="fur_status" {if $item['fur_status']==0 } checked="checked" {/if}> 否
+					<input type="radio" name="cj[fur_status]" value="1" class="fur_status" {if $item['fur_status']==1 } checked="checked" {/if} style="margin-left:30px;"> 是
+					<div style="color: #98999a;font-size: 12px;margin-top: 5px;">(注* 选择皮一下后,奖品将是皮一下模式。)</div>
+				</div>
+
+			</div>
+
+			<div class="form-group" id="fur_if" style="display:none">
+				<label for="" class="control-label col-sm-1">奖品名称*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<select name="cj[fur_title]" class="form-control ng-pristine ng-untouched ng-valid ng-empty">
+						{loop $fur_list $v}
+                            <option value="{php echo $v['id']}"  {if $v['id'] == $item['fur_title']} selected="selected" {/if}>{$v['title']}</option>
+		                {/loop}
+					</select>
+				</div>
+			</div>
+			<div id="shiwu" {if $item[goods_status]=='' }style="display:block" {else if $item[goods_status]==0 }style="display:block" {else}style="display:none" {/if}>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1">奖品名称*</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input type="text" name="goods_name1" id="goods_name1" value="{$item['goods_name']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">奖品名称</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1">数量*</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input type="number" name="goods_num1" id="goods_num" value="{$item['goods_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">数量</div>
+				</div>
+
+			</div>
+			<!-- 红包 -->
+			<div id="hongbao" {if $item[goods_status]==2 }style="display:block" {else}style="display:none" {/if}>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1">单个红包金额*</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input id="cjred_envelope" type="text" name="cj[red_envelope]" value="{$item['red_envelope']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">单个红包金额</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1">数量*</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input type="number" name="goods_num2" value="{$item['goods_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">数量</div>
+				</div>
+			</div>
+			<!-- 电子卡 -->
+			<div id="dianzika" {if $item[goods_status]==1 }style="display:block" {else}style="display:none" {/if}>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1">奖品名称*</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input type="text" name="goods_name3" id="goods_name3" value="{$item['goods_name']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">奖品名称</div>
+				</div>
+				<div id="card">
+					{if $item[goods_status] == 1} {loop $item[card_info] $card}
+					<!-- 编辑 -->
+					<div class="cardbox">
+						<div class="form-group">
+							<label for="" class="control-label col-sm-1">卡号*</label>
+							<div id="card_number" class="form-controls col-sm-5 card_number" style="margin-left: 75px;">
+								<input type="text" name="card_number[]" value="{$card[0]}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="form-controls col-sm-3 help-block">电子卡号</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="control-label col-sm-1">密码*</label>
+							<div id="card_password" class="form-controls col-sm-5 card_password" style="margin-left: 75px;">
+								<input type="text" name="card_password[]" value="{$card[1]}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="form-controls col-sm-3 help-block">电子卡密码</div>
+						</div>
+						<!--<button class="dels">删除</button>-->
+
+					</div>
+					{/loop} {else}
+					<!-- 新增 -->
+					<div class="cardbox">
+						<div class="form-group">
+							<label for="" class="control-label col-sm-1">卡号*</label>
+							<div id="card_number" class="form-controls col-sm-5 card_number" style="margin-left: 75px;">
+								<input type="text" name="card_number[]" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="form-controls col-sm-3 help-block">电子卡号</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="control-label col-sm-1">密码*</label>
+							<div id="card_password" class="form-controls col-sm-5 card_password" style="margin-left: 75px;">
+								<input type="text" name="card_password[]" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="form-controls col-sm-3 help-block">电子卡密码</div>
+						</div>
+						<!--<button class="dels">删除</button>-->
+					</div>
+					{/if}
+				</div>
+
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1"></label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input type="button" value="添加电子卡" id="addCard">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block"></div>
+				</div>
+			</div>
+			<!-- 结束 -->
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1">奖品缩略图*</label>
+				<div id="cjgoods_icon" class="form-controls col-sm-5" style="margin-left: 75px;">
+					{php echo tpl_form_field_image('cj[goods_icon]', $item['goods_icon'])}
+
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">(建议图片尺寸380*200px)</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1">开奖方式*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<select name="cj[smoke_set]" class="form-control ng-pristine ng-untouched ng-valid ng-empty" id="kjfsCj">
+						<option value="2" {if $item[ 'smoke_set']==2} selected{/if}>手动开奖</option>
+						<option value="0" {if $item[ 'smoke_set']==0} selected{/if}>开奖时间</option>
+						<option value="1" {if $item[ 'smoke_set']==1} selected{/if}>开奖人数</option>
+						<option value="3" {if $item[ 'smoke_set']==3} selected{/if}>现场开奖</option>
+					</select>
+				</div>
+			</div>
+
+			
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">是否支持组队*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="radio" name="cj[team_status]" value="0" class="team_status" {if $item[ 'team_status']==0 } checked="checked" {/if}> 否
+					<input type="radio" name="cj[team_status]" value="1" class="team_status" {if $item[ 'team_status']==1 } checked="checked" {/if} style="margin-left:30px;"> 是
+					<div style="color: #98999a;font-size: 12px;margin-top: 5px;">(注* 组队抽奖一人中奖则全队中奖 (指定中奖人除外) , 队伍中只要有一人可中奖次数不为0,该队都有机会中奖。)</div>
+				</div>
+
+			</div>
+			<div class="form-group hideclass"  style="display:none" id="team_if">
+				<label for="" class="control-label col-sm-1">队伍人数*</label>
+				<div id="team_number" class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="number" name="cj[team_num]" value="{$item['team_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">队伍由几人组成</div>
+			</div>
+
+			<div id="address_dis" class="hideclass" {if $item[ 'goods_status']==0 || $item[ 'goods_status']=='' }style="display:block" {else}style="display:none" {/if}>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-1">支持的领取方式</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input id="cjmail_status" type="checkbox" name="cj[mail_status]" {if $item[ 'mail_status']==1 } checked="checked" {/if} class="checkyou" value="0"> 邮寄
+						<input id="cjziqustatus" type="checkbox" name="cj[ziqu_status]" {if $item[ 'ziqu_status']==1 } checked="checked" {/if} class="checkzqu" value="0"> 自取
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">可多选</div>
+
+				</div>
+				<div id="ziqu_status" class="form-group" style="display:none">
+					<label for="" class="control-label col-sm-1">商家地址*</label>
+					<div class="form-controls col-sm-5" style="margin-left: 75px;">
+						<input type="text" name="cj[business_address]" id="cjbusiness_address" value="{$item['business_address']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="form-controls col-sm-3 help-block">中奖者上门自取所需要的地址</div>
+				</div>
+				<div id="mail_status" style="display:none">
+					<div class="form-group">
+						<label for="" class="control-label col-sm-1">是否包邮</label>
+						<div id='cjYouSong' class="form-controls col-sm-5" style="margin-left: 75px;">
+							<input type="radio" name="cj[YouSong]" value="0" class="YouSong_status" {if $item[ 'YouSong']==0 } checked="checked" {/if}> 否
+							<input type="radio" name="cj[YouSong]" value="1" class="YouSong_status" {if $item[ 'YouSong']==1 } checked="checked" {/if} style="margin-left:30px;"> 是
+						</div>
+					</div>
+					<div class="form-group YouSong_price">
+						<label for="" class="control-label col-sm-1">运费*</label>
+						<div class="form-controls col-sm-5" style="margin-left: 75px;">
+							<input type="text" name="cj[freight]" id="cjfreight" value="{$item['freight']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+						</div>
+						<div class="col-sm-1"></div>
+						<div class="form-controls col-sm-3 help-block">邮寄单件奖品所需运费</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">奖品简介</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<textarea name="cj[content]" class="form-control" value="{$item['content']}" placeholder='建议100字以内'>{$item['content']}</textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">请输入奖品简介</div>
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">奖品详情图片</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					{php echo tpl_form_field_multi_image('goods_images',$item['goods_images']);}
+					<!--多图-->
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">请输入奖品简介</div>
+			</div>
+
+			<div class="form-group hideclass" id="kjsj" {if $item[ 'smoke_set']!=0}style="display:none;" {/if}>
+				<label for="" class="control-label col-sm-1">开奖时间*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<div id="date" class="col-sm-6" style="padding-left: 0;">
+						{php echo tpl_form_field_date(date,$item['date'])}
+					</div>
+					<div class="col-sm-6" style="padding-left: 0;padding-right: 0;">
+
+						{php echo tpl_form_field_clock(time,$item['time'])}
+					</div>
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">开奖时间</div>
+			</div>
+
+			<div class="form-group hideclass" id="kjrs" {if $item[ 'smoke_set']!=1}style="display:none;" {/if}>
+				<label for="" class="control-label col-sm-1">开奖人数*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[smoke_num]" id="smoke_num" value="{$item['smoke_num']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">多少人参与后,自动开奖</div>
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">奖品赞助商</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[goods_sponsorship]" id="goods_sponsorship" value="{$item['goods_sponsorship']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">建议不要超过五个字</div>
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">小程序appid</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[sponsorship_appid]" value="{$item['sponsorship_appid']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">此处填写需要跳转的小程序appid，必须是同一公众号下关联，而非同个开放平台账号下</div>
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">跳转小程序路径</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[sponsorship_url]" value="{$item['sponsorship_url']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">需要跳转的小程序路径，留空则打开首页。填写实例: /page/index/index?id=123</div>
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">奖品赞助商标语</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[sponsorship_text]" id="sponsorship_text" value="{$item['sponsorship_text']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">赞助商简介(一句话)</div>
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">赞助商介绍</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<textarea name="cj[sponsorship_content]" class="form-control" value="{$item['sponsorship_content']}" placeholder='建议100字以内'>{$item['sponsorship_content']}</textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">请输入赞助商信息</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1">发起人*</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="link" id="user_nickname" class="form-control" value="{$item['goods_username']}" onblur="seluser()" style="display:inline-block;width:78%">
+					<input type="hidden" name="cj[goods_openid]" id="select_uid" value="{$item['goods_openid']}">
+					<button class="btn btn-default btn_seluser" type="button" style="width:20%;height:34px;line-height:15px;">选择用户</button>
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1">是否指定中奖者</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="radio" name="cj[The_winning]" value="0" class="onclick" {if $item[ 'The_winning']==0 } checked="checked" {/if}> 否
+					<input type="radio" name="cj[The_winning]" value="1" class="onclick" {if $item[ 'The_winning']==1 } checked="checked" {/if} style="margin-left:30px;"> 是
+				</div>
+
+			</div>
+
+			<div class="form-group goods_winning" style="display:none">
+				<label for="" class="control-label col-sm-1">中奖者</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[goods_winning]" id="user_nicknames" class="form-control" value="{$item['goods_winning']}" onblur="selusers()" style="display:inline-block;width:78%">
+					<!-- <input type="hidden" name="cj[goods_winning]" id="select_uid1" value="{$item['goods_winning']}"> -->
+					<button class="btn btn-default btn_seluser1" type="button" style="width:20%;height:34px;line-height:15px;">选择用户</button>
+				</div>
+				<div class="form-controls col-sm-3 help-block">指定后、如不参与抽奖将作废</div>
+
+			</div>
+
+			<div class="form-group hideclass">
+				<label for="" class="control-label col-sm-1">参与抽奖方式</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="radio" name="cj[join_conditions]" value="0" class="onclick1" {if $item[ 'join_conditions']==0 } checked="checked" {/if}> 默认
+					<input type="radio" name="cj[join_conditions]" value="1" class="onclick1" {if $item[ 'join_conditions']==1 } checked="checked" {/if} style="margin-left:30px;"> 付费
+					<input type="radio" name="cj[join_conditions]" value="2" class="onclick1" {if $item[ 'join_conditions']==2 } checked="checked" {/if} style="margin-left:30px;"> 口令
+				</div>
+			</div>
+
+			<div class="form-group mouth_join" style="display:none">
+				<label for="" class="control-label col-sm-1">口令</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[mouth_command]" value="{$item['mouth_command']}" maxlength="8" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="form-controls col-sm-3 help-block">参与抽奖是输入口令(不填写则无需输入口令)</div>
+			</div>
+
+			<div class="form-group price_join" style="display:none">
+				<label for="" class="control-label col-sm-1">付费参与价格</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<input type="text" name="cj[price]" id="sponsorship_text" value="{$item['price']}" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="" autocomplete="off">
+				</div>
+				<div class="form-controls col-sm-3 help-block">付费参与价格</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="control-label col-sm-1">审核</label>
+				<div class="form-controls col-sm-5" style="margin-left: 75px;">
+					<select name="cj[audit_status]" class="form-control ng-pristine ng-untouched ng-valid ng-empty" id="kjfs">
+						<option value="0" {if $item[ 'audit_status']==0} selected{/if}>待审核</option>
+						<option value="1" {if $item[ 'audit_status']==1} selected{/if}>通过</option>
+						<option value="-1" {if $item[ 'audit_status']==-1} selected{/if}>拒绝</option>
+					</select>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-12">
+			<input name="token" type="hidden" value="{$_W['token']}" />
+			<input id="aaa" type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交" style="margin-left: 45%;" />
+		</div>
+	</div>
+</form>
+<input type="hidden" value="0" id="Infos">
+
+<!-- 选择用户 -->
+<div class="modal fade" id="user-info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+	<div class="modal-dialog" style="width:800px;top:360px;">
+
+		<div class="modal-content">
+
+			<input type="hidden" name="m" value="" />
+
+			<div class="modal-header">
+
+				<button type="button" class="close close_user" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+
+				<h4>选择用户</h4>
+
+			</div>
+
+			<div class="modal-body">
+
+				<div class="row">
+
+					<div class="input-group">
+
+						<input type="text" class="form-control" name="keyword" value="" id="keyword_user" placeholder="请输入用户名称关键字">
+
+						<span class="input-group-btn"><button type="button" class="btn btn-default" onclick="search_users();">搜索</button></span>
+
+					</div>
+
+				</div>
+
+				<div id="module-menus" style="padding-top:5px;">
+					<div style="max-height:500px;overflow:auto;min-width:750px;">
+
+						<table class="table table-hover" style="min-width:750px;">
+
+							<tbody id="user_list">
+
+							</tbody>
+
+						</table>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	{/if} {template 'common/footer'}
+	<style>
+		.a_div {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			line-height: 50px;
+			font-size: 18px;
+			background-color: rgba(0, 0, 0, .3);
+			color: #000;
+			z-index: 10000000000000000;
+		}
+		
+		.confirm {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: flex;
+			flex-direction: column;
+			width: 250px;
+			height: 164px;
+			text-align: left;
+			line-height: 50px;
+			font-size: 14px;
+			background-color: #fff;
+		}
+		
+		.tishi {
+			width: 100%;
+			height: 42px;
+			line-height: 42px;
+			background-color: #F8F8F8;
+			padding-left: 20px;
+		}
+		
+		.confirm_aife {
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-end;
+			padding-right: 20px;
+		}
+		
+		.confirm_btn {
+			float: right;
+			width: 60px;
+			height: 28px;
+			line-height: 28px;
+			padding: 0 15px;
+			border: 2px solid ##1E9FFF;
+			background-color: #1E9FFF;
+			color: #fff;
+		}
+		
+		.tishi_con {
+			height: 30px;
+			line-height: 30px;
+			padding-left: 20px;
+			margin-top: 8px;
+		}
+		
+		.c {
+			height: 50px;
+			line-height: 18px;
+			font-size: 12px;
+			color: #f60;
+			padding-left: 20px;
+		}
+	</style>
+	<script>
+		$("#cjziqustatus").on("click", function(e) {
+			if($(this).val() == 0) {
+				$(this).attr("checked", true).val(1)
+				$("#ziqu_status").show()
+			} else {
+				$(this).attr("checked", false).val(0)
+				$("#ziqu_status").hide()
+			}
+
+			//			console.log($(this).val())
+		})
+		$(".team_status").on("click", function(e) {
+			$(this).attr("checked", true).siblings("input").attr("checked", false)
+			if($(this).val() == 1) {
+				$("#team_if").show()
+			} else {
+				$("#team_if").hide()
+			}
+
+			//			console.log($(this).val())
+		})
+		$(".fur_status").on("click", function(e) {
+			$(this).attr("checked", true).siblings("input").attr("checked", false)
+			if($("#good_lb").val() === '1'){
+				if($(this).val() == 1) {
+					$("#fur_if").show()
+					$("#dianzika").hide()
+				} else {
+					$("#fur_if").hide()
+					$("#dianzika").show()
+				}
+			}else{
+				if($(this).val() == 1) {
+					$("#fur_if").show()
+					$("#shiwu").hide()
+				} else {
+					$("#fur_if").hide()
+					$("#shiwu").show()
+				}
+			}
+			
+
+			//			console.log($(this).val())
+		})
+		
+		$("#cjmail_status").on("click", function(e) {
+			if($(this).val() == 0) {
+				$(this).attr("checked", true).val(1)
+				$("#mail_status").show()
+			} else {
+				$(this).attr("checked", false).val(0)
+				$("#mail_status").hide()
+			}
+
+			//			console.log($(this).val())
+		})
+		//		$(function(){
+		//			
+		//		})
+		function showT(con) {
+			if($(".a_div").length === 0) {
+				var aDiv = document.createElement("div")
+				aDiv.className = "a_div"
+				aDiv.innerHTML = "<div class='confirm'><span class='tishi'>提示</span><span class='tishi_con'>" + con + "</span><span class='c'>*为必填项，请填写完整</span><span class='confirm_aife'><a class='confirm_btn'>确认</a></span></div>"
+				var aBody = document.getElementsByTagName("body")[0]
+				aBody.appendChild(aDiv)
+			} else {
+				var aDiv =
+					$(".a_div .tishi_con").html(con)
+				$(".a_div").css("display", "block");
+			}
+
+		}
+		$("#cjYouSong").on("click", "input", function() {
+
+			$(this).attr("checked", true).siblings("input").attr("checked", false)
+		})
+
+		function kaquan(kaName) {
+			for(var i = 0, len = $(".cardbox").length; i < len; i++) {
+				//				console.log($(".cardbox").eq(i).find(".card_number").children("input"))
+				//				console.log($(".cardbox").eq(i).find(kaName).val())
+				if($(".cardbox").eq(i).find(kaName).val() == "") {
+					return false
+				}
+			}
+			return true
+		}
+		$(".form2").submit(function(e) {
+			//			console.log(e)
+			//			console.log($("#cjfreight").val()  == "")
+			var aDate = new Date();
+			var Y = aDate.getFullYear()
+			var M = aDate.getMonth() + 1
+			var D = aDate.getDate()
+			var YMD = [Y, M, D]
+			var timestamp = Date.parse(aDate)
+			if($("#good_lb").val() === '0') {
+				if($("input[name=goods_name1]").val() == "") {
+					//					console.log($("input[name=goods_name1]").val())
+					showT("请填写奖品名称")
+					e.preventDefault();
+				}
+				if($("input[name=goods_num1]").val() == "") {
+					showT("请填写奖品数量")
+					e.preventDefault();
+				}
+				if($("#cjgoods_icon input").val() == "") {
+					showT("请上传奖品缩略图")
+					e.preventDefault();
+				}
+				if($("#select_uid").val() == "") {
+					showT("请填写发起人")
+					e.preventDefault();
+				}
+				//				console.log($("#card_number input").val())
+				if($("#kjfsCj").val() != 3){
+					if($(".team_status").eq(1).attr("checked") == "checked") {
+					//					console.log($("#team_number input").val(),typeof $("#team_number input").val())	
+					var numbers = Math.floor($("#team_number input").val())
+					if(numbers <= 1) {
+						showT("组队人数必须大于1")
+						e.preventDefault();
+					} else if($("input[name=goods_num1]").val() < numbers) {
+						showT("奖品数量不能小于组队人数")
+						e.preventDefault();
+					}
+				}
+				if($("#cjziqustatus").val() == 0 && $("#cjmail_status").val() == 0) {
+					showT("领取方式不能为空")
+					e.preventDefault();
+				}
+				if($("#cjziqustatus").val() == 1 && $("#cjmail_status").val() == 0) {
+					if($("#cjbusiness_address").val() == "") {
+						showT("请填写商家地址")
+						e.preventDefault();
+					}
+				}
+				if($("#cjmail_status").val() == 1 && $("#cjziqustatus").val() == 0) {
+					if($("#cjYouSong input").eq(0).attr("checked") === 'checked') {
+						if($("#cjfreight").val() <= 0 || $("#cjfreight").val() == "") {
+							showT("运费必须大于0")
+							e.preventDefault();
+						}
+					}
+				}
+				if($("#cjmail_status").val() == 1 && $("#cjziqustatus").val() == 1) {
+					if($("#cjbusiness_address").val() == "") {
+						showT("请填写商家地址")
+						e.preventDefault();
+					}
+					if($("#cjYouSong input").eq(0).attr("checked") === 'checked') {
+						if($("#cjfreight").val() <= 0 || $("#cjfreight").val() == "") {
+							showT("运费必须大于0")
+							e.preventDefault();
+						}
+					}
+				}
+				if($("#kjfsCj").val() == 0) {
+					var getYMD = $("#date input").val()
+					getYMD = getYMD.replace(/-/g, "/")
+					var getMS = $("input[name=time]").val()
+					var times = getYMD + " " + getMS
+					var nDate = new Date(times)
+					var timestamp1 = Date.parse(nDate)
+					if(timestamp1 < timestamp) {
+						showT("时间必须大于当前时间")
+						e.preventDefault();
+					}
+				}
+				if($("#kjfsCj").val() == 1) {
+					if($("#smoke_num").val() == "") {
+						showT("请填写开奖人数")
+						e.preventDefault();
+					}
+				}
+				}
+				
+
+			} else if($("#good_lb").val() === '1') {
+				//				console.log($("#card_number input"))
+				if($("input[name=goods_name3]").val() == "") {
+					showT("请填写奖品名称")
+					e.preventDefault();
+				}
+				if($("#card_number input").val() == "") {
+					showT("最少填写一个卡号")
+					e.preventDefault();
+				}
+				if($("#card_password input").val() == "") {
+					showT("请输入密码")
+					e.preventDefault();
+				}
+				if($("#cjgoods_icon input").val() == "") {
+					showT("请上传奖品缩略图")
+					e.preventDefault();
+				}
+				if($("#select_uid").val() == "") {
+					showT("请填写发起人")
+					e.preventDefault();
+				}
+				if($("#kjfsCj").val() != 3){
+					if($(".team_status").eq(1).attr("checked") == "checked") {
+					//					console.log($("#team_number input").val(),typeof $("#team_number input").val())	
+					var numbers = Math.floor($("#team_number input").val())
+					if(numbers <= 1) {
+						showT("组队人数必须大于1")
+						e.preventDefault();
+					} else if($(".cardbox").length < numbers) {
+						showT("卡号数量不能小于组队人数")
+						e.preventDefault();
+					} else {
+						//						console.log(kaquan(".card_number input"))
+						if(!kaquan(".card_number input")) {
+							showT("卡号不能为空")
+							e.preventDefault();
+						}
+						if(!kaquan(".card_password input")) {
+							showT("密码不能为空")
+							e.preventDefault();
+						}
+					}
+				}
+				if($("#kjfsCj").val() == 0) {
+					var getYMD = $("#date input").val()
+					getYMD = getYMD.replace(/-/g, "/")
+					var getMS = $("input[name=time]").val()
+					var times = getYMD + " " + getMS
+					var nDate = new Date(times)
+					var timestamp1 = Date.parse(nDate)
+					if(timestamp1 < timestamp) {
+						showT("时间必须大于当前时间")
+						e.preventDefault();
+					}
+				}
+				if($("#kjfsCj").val() == 1) {
+					if($("#smoke_num").val() == "") {
+						showT("请填写开奖人数")
+						e.preventDefault();
+					}
+				}
+				}
+				
+				
+			} else if($("#good_lb").val() === '2') {
+				if($("#cjred_envelope").val() == "") {
+					showT("请填写单个红包金额")
+					e.preventDefault();
+				}
+				if($("input[name=goods_num2]").val() == "") {
+					showT("请填写数量")
+					e.preventDefault();
+				}
+				if($("#cjgoods_icon input").val() == "") {
+					showT("请上传奖品缩略图")
+					e.preventDefault();
+				}
+				if($("#select_uid").val() == "") {
+					showT("请填写发起人")
+					e.preventDefault();
+				}
+				if($("#kjfsCj").val() != 3){
+					if($(".team_status").eq(1).attr("checked") == "checked") {
+					//					console.log($("#team_number input").val(),typeof $("#team_number input").val())	
+					var numbers = Math.floor($("#team_number input").val())
+					if(numbers <= 1) {
+						showT("组队人数必须大于1")
+						e.preventDefault();
+					} else if($("input[name=goods_num2]").val() < numbers) {
+						showT("红包数量不能小于组队人数")
+						e.preventDefault();
+					}
+				}
+				if($("#kjfsCj").val() == 0) {
+					var getYMD = $("#date input").val()
+					getYMD = getYMD.replace(/-/g, "/")
+					var getMS = $("input[name=time]").val()
+					var times = getYMD + " " + getMS
+					var nDate = new Date(times)
+					var timestamp1 = Date.parse(nDate)
+					if(timestamp1 < timestamp) {
+						showT("时间必须大于当前时间")
+						e.preventDefault();
+					}
+				}
+				if($("#kjfsCj").val() == 1) {
+					if($("#smoke_num").val() == "") {
+						showT("请填写开奖人数")
+						e.preventDefault();
+					}
+				}
+				}
+				
+				
+			}
+		})
+		//点击确认关闭
+		$(document).on("click", ".confirm_aife", function() {
+			$(".a_div").css("display", "none");
+		})
+		$(".btn_seluser").click(function() {
+
+			$('#user-info').modal('show');
+			$('#Infos').val(0);
+
+		});
+		$(".btn_seluser1").click(function() {
+			var user_nicknames = $("#user_nicknames").val();
+			var goods_num = $("#goods_num").val();
+			$('#Infos').val(1);
+			$('#user-info').modal('show');
+
+		});
+
+		$("#kjfsCj").change(function() {
+			var index = $(this).children('option:selected').val();
+			if(index == 0) {
+				$(".hideclass").css("display", "block");
+				$("#kjsj").css("display", "block");
+				$("#kjrs").css("display", "none");
+				if($(".team_status").eq(0).prop("checked")) {
+					$("#team_if").attr("style", "display:none")
+				}else if($(".team_status").eq(1).prop("checked")){
+					$("#team_if").attr("style", "display:block")
+				}
+			} else if(index == 1) {
+				$(".hideclass").css("display", "block");
+				$("#kjsj").css("display", "none");
+				$("#kjrs").css("display", "block");
+				if($(".team_status").eq(0).prop("checked")) {
+						$("#team_if").attr("style", "display:none")
+					}else if($(".team_status").eq(1).prop("checked")){
+						$("#team_if").attr("style", "display:block")
+					}
+			} else if(index == 3) {
+				$(".hideclass").css("display", "none");
+			} else {
+				$(".hideclass").css("display", "block");
+				$("#kjsj").css("display", "none");
+				$("#kjrs").css("display", "none");
+				if($(".team_status").eq(0).prop("checked")) {
+						$("#team_if").attr("style", "display:none")
+				}else if($(".team_status").eq(1).prop("checked")){
+						$("#team_if").attr("style", "display:block")
+				}
+			}
+		});
+
+		$("#card").on("click", ".cardbox button", function() {
+			$(this).parent().remove();
+		});
+		$("#good_lb").change(function() {
+			var index = $(this).children('option:selected').val();
+			if(index == 0) {
+				$("#address_dis").css("display", "block");
+				$("#shiwu").css("display", "block");
+				$("#hongbao").css("display", "none");
+				$("#dianzika").css("display", "none");
+			} else if(index == 2) {
+				$("#address_dis").css("display", "none");
+				$("#shiwu").css("display", "none");
+				$("#hongbao").css("display", "block");
+				$("#dianzika").css("display", "none");
+			} else {
+				$("#address_dis").css("display", "none");
+				$("#shiwu").css("display", "none");
+				$("#hongbao").css("display", "none");
+				$("#dianzika").css("display", "block");
+			}
+		});
+
+		$("#addCard").click(function() {
+			$("#card").append(
+				'<div class="cardbox">' +
+				'<div class="form-group">' +
+				'<label for="" class="control-label col-sm-1">卡号</label>' +
+				'<div class="form-controls col-sm-5 card_number" style="margin-left: 75px;">' +
+				'<input type="text" name="card_number[]" value="" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">' +
+				'</div>' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="form-controls col-sm-3 help-block">电子卡号</div>' +
+				'</div>' +
+				'<div class="form-group">' +
+				'<label for="" class="control-label col-sm-1">密码</label>' +
+				'<div class="form-controls col-sm-5 card_password" style="margin-left: 75px;">' +
+				'<input type="text" name="card_password[]" value="" class="form-control ng-pristine ng-untouched ng-valid ng-empty"  placeholder="" autocomplete="off">' +
+				'</div>' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="form-controls col-sm-3 help-block">电子卡密码</div>' +
+				'</div>' +
+				'<button class="dels">删除</button>' +
+				'</div>'
+			)
+		});
+
+		function search_users() {
+
+			var keyword_user = $("#keyword_user").val();
+
+			$("#user_list").empty();
+
+			$.ajax({
+				type: 'post',
+				dataType: 'json',
+				url: "{php echo $this->createWebUrl('choujiang_goods',array('op' =>'user'))}",
+				data: {
+					keyword_user: keyword_user
+				},
+
+				success: function(result) {
+
+					if(result.data == '') {
+
+						var html = '未找到该用户...'
+						$("#user_list").append(html);
+
+					} else {
+						var html = getuserRows(result.data);
+
+						$("#user_list").append(html);
+					}
+
+				}
+			});
+		}
+
+		function seluser() {
+
+			var user_nickname = $("#user_nickname").val();
+
+			if(user_nickname != '') {
+
+				$.ajax({
+					type: 'post',
+					dataType: 'json',
+					url: "{php echo $this->createWebUrl('choujiang_goods',array('op' =>'user'))}",
+					data: {
+						user_nickname: user_nickname
+					},
+
+					success: function(result) {
+
+						if(result.success == 1) {
+
+							$("#select_uid").val(result.data);
+
+						} else {
+
+							alert(result.data);
+
+						}
+					}
+				});
+
+			}
+
+		}
+
+		function getuserRows(data) {
+
+			var html = '';
+
+			for(i = 0; i < data.length; i++) {
+
+				html += '<tr>';
+
+				html += '<td><img src="' + data[i].avatar + '" style="width:30px;height:30px;padding1px;border:1px solid #ccc"> ' + data[i].nickname + '</td>';
+
+				html += '<td></td>';
+
+				html += '<td></td>';
+
+				html += '<td style="width:80px;"><a href="javascript:;" onclick="select_user(this)" link_name=' + data[i].nickname + ' user_uid=' + data[i].openid + '>选择</a></td>';
+
+				html += '</tr>';
+
+			}
+
+			return html;
+
+		}
+
+		function select_user(obj) {
+			var infos = $('#Infos').val();
+
+			if(infos == 0) {
+
+				$("#user_nickname").val($(obj).attr('link_name'));
+
+				$("#select_uid").val($(obj).attr('user_uid'));
+			} else if(infos == 1) {
+				var user_nicknames = $("#user_nicknames").val();
+
+				if(user_nicknames == '') {
+					var str_user = $(obj).attr('link_name');
+				} else {
+					var str_user = user_nicknames + '++' + $(obj).attr('link_name');
+				}
+
+				$("#user_nicknames").val(str_user);
+				// $("#select_uid1").val(str_uid);
+			}
+
+			$('#user-info').modal('hide');
+
+			$("#keyword_user").val('');
+
+			$("#user_list").html('');
+
+		}
+	</script>
+	<!-- 是否指定中奖者 -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var val = $(".onclick:checked").val();
+			var val1 = $(".onclick1:checked").val();
+			var val2 = $(".YouSong_status:checked").val();
+			// var val3 = $(".team_status:checked").val();
+			// console.log(6)
+		// console.log($(".fur_status").eq(0).prop('checked'))
+		// console.log($(".team_status").eq(0).prop("checked"))
+			if($(".fur_status").eq(0).prop('checked')){
+				$("#shiwu").css("display", "block");
+				$("#fur_if").hide()
+			}else if($(".fur_status").eq(1).prop('checked')){
+				$("#shiwu").css("display", "none");
+				$("#fur_if").show()
+			}
+			if($("#kjfsCj").children('option:selected').val() == 3) {
+				$(".hideclass").css("display", "none");
+			}
+			if($("#kjfsCj").children('option:selected').val() == 2){
+				$(".hideclass").css("display", "block");
+				$("#kjsj").css("display", "none");
+				$("#kjrs").css("display", "none");
+			}
+			if($("#kjfsCj").children('option:selected').val() == 0){
+				$(".hideclass").css("display", "block");
+				$("#kjsj").css("display", "block");
+				$("#kjrs").css("display", "none");
+			}
+			if($("#kjfsCj").children('option:selected').val() == 1){
+				$(".hideclass").css("display", "block");
+				$("#kjsj").css("display", "none");
+				$("#kjrs").css("display", "block");
+			}
+			if($("#good_lb").children('option:selected').val() == 2){
+				$("#address_dis").css("display", "none");
+				$("#shiwu").css("display", "none");
+				$("#hongbao").css("display", "none");
+				$("#dianzika").css("display", "none");
+			}
+			if($("#cjziqustatus").attr("checked") == "checked") {
+				$("#cjziqustatus").val(1)
+				$("#ziqu_status").attr("style", "display:block")
+			}
+			if($(".team_status").eq(0).prop("checked")) {
+				$("#team_if").attr("style", "display:none")
+			}else if($(".team_status").eq(1).prop("checked")){
+				$("#team_if").attr("style", "display:block")
+			}
+			if($("#cjmail_status").attr("checked") == "checked") {
+				$("#cjmail_status").val(1)
+				$("#mail_status").attr("style", "display:block")
+			}
+			if(val2 == 1) {
+				$('.YouSong_price').attr("style", "display:none");
+			} else {
+				$('.YouSong_price').attr("style", "");
+			}
+			if(val == 1) {
+				$('.goods_winning').attr("style", "");
+			} else {
+				$('.goods_winning').attr("style", "display:none");
+			}
+			// if(val3 == 1) {
+			// 	$('#team_if').attr("style", "");
+			// } else {
+			// 	$('#team_if').attr("style", "display:none");
+			// }
+			// $('.team_status').click(function() {
+			// 	var type = $(this).val();
+			// 	if(type == 0) {
+			// 		$('.team_if').attr("style", "display:none");
+			// 	} else {
+			// 		$('.YouSong_price').attr("style", "");
+			// 	}
+			// })
+			$('.YouSong_status').click(function() {
+				var type = $(this).val();
+				if(type == 1) {
+					$('.YouSong_price').attr("style", "display:none");
+				} else {
+					$('.YouSong_price').attr("style", "");
+				}
+			})
+			$('.onclick').click(function() {
+				var type = $(this).val();
+				if(type == 1) {
+					$('.goods_winning').attr("style", "");
+				} else {
+					$('.goods_winning').attr("style", "display:none");
+				}
+			})
+			if(val1 == 1) {
+				$('.price_join').attr("style", "");
+			} else if(val1 == 2) {
+				$('.mouth_join').attr("style", "");
+			} else {
+				$('.price_join').attr("style", "display:none");
+				$('.mouth_join').attr("style", "display:none");
+			}
+			$('.onclick1').click(function() {
+				var type = $(this).val();
+				// alert(123);
+				if(type == 1) {
+					$('.mouth_join').attr("style", "display:none");
+					$('.price_join').attr("style", "");
+				} else if(type == 2) {
+					$('.price_join').attr("style", "display:none");
+					$('.mouth_join').attr("style", "");
+				} else {
+					$('.price_join').attr("style", "display:none");
+					$('.mouth_join').attr("style", "display:none");
+				}
+			})
+		})
+
+		function setItemStatus(obj, op) {
+			var id = $(obj).attr('data');
+			if(op == 'index') {
+				$.ajax({
+					type: 'post',
+					dataType: 'json',
+					url: "{php echo $this->createWebUrl('choujiang_goods',array('op' =>'index'))}",
+					data: {
+						goods_id: id
+					},
+					success: function(result) {
+						if(result.data == 1) {
+							$(obj).addClass('actives');
+						} else {
+							$(obj).removeClass('actives');
+						}
+					}
+				});
+			}
+		}
+	</script>

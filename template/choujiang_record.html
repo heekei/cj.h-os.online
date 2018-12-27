@@ -1,0 +1,87 @@
+{template 'common/header'}
+
+{if $op == 'content'}
+
+<form class="form-horizontal" action="" method="post" class="form1">
+    <div class="pull-right col-sm-6" style="margin-bottom:20px">
+        <div class="input-group" style="width:100%;">
+            <input type="text" class="input-sm form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入奖品名称进行搜索" style="height:34px">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"> 搜索</button>
+            </span>
+        </div>
+    </div>
+    <table class="table we7-table table-hover article-list vertical-middle">
+        <tr>
+            <td style="width: 100px;">ID</td>
+            <td>奖品名称</td>
+            <td>奖品缩略图</td>
+            <td>用户</td>
+            <td>中奖状态</td>
+            <td>参与时间</td>
+            <td>开奖时间</td>
+            <td>兑奖方式</td>
+        </tr>
+        {loop $products $item}
+        <tr>
+            <td>
+                {$item['id']}
+            </td>
+            <td>
+                {$item['goods_name']}
+            </td>
+            <td style="width: 150px">
+                <img src="{media $item['goods_icon']}" width="100px" alt="">
+            </td>
+            <td>
+                {$item['nickname']}
+            </td>
+            <td>
+                {$item['state']}
+            </td>
+            <td>
+                {$item['create_time']}
+            </td>
+            <td>
+                {if $item['state']=='未开奖'}未开奖{else}{$item['finish_time']}{/if}
+            </td>
+            <td>
+                {$item['get_title']}
+                {if $item['get_status'] == 1}
+                    <a class="btn btn-default btn-sm" href="{php echo $this->createWeburl('choujiang_record', array('id' => $item['id'], 'op' =>'post'))}" >收货地址</a>
+                {/if}
+            </td>
+        </tr>
+        {/loop}
+    </table>
+    <div style="margin:0 auto;margin-right: auto;vertical-align: middle;text-align: center;" >
+        {$pager}
+    </div>
+</form>
+{/if}
+
+{if $op == 'post'}
+    <form class="form-horizontal" action="" method="post" class="form1">
+
+        <table class="table we7-table table-hover article-list vertical-middle">
+            <tr>
+                <td>收货人</td>
+                <td>{$item['user_name']}</td>
+            </tr>
+            <tr>
+                <td>收货地址</td>
+                <td>{$item['user_address']}</td>
+            </tr>
+            <tr>
+                <td>联系电话</td>
+                <td>{$item['user_tel']}</td>
+            </tr> 
+            <tr>
+                <td>邮编地址</td>
+                <td>{$item['user_zip']}</td>
+            </tr> 
+        </table>
+    </form>
+{/if}
+
+    {template 'common/footer'}
